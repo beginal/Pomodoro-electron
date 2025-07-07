@@ -23,6 +23,35 @@
   }
 }
 
+/* 컴팩트 모드 스타일 */
+.app-container {
+  transition: all 0.3s ease;
+}
+
+.app-container.compact-mode {
+  font-size: 0.8em;
+}
+
+.app-container.compact-mode .text-xl {
+  font-size: 1rem !important;
+}
+
+.app-container.compact-mode .text-lg {
+  font-size: 0.9rem !important;
+}
+
+.app-container.compact-mode .text-base {
+  font-size: 0.8rem !important;
+}
+
+.app-container.compact-mode .text-sm {
+  font-size: 0.7rem !important;
+}
+
+.app-container.compact-mode .text-xs {
+  font-size: 0.6rem !important;
+}
+
 .app {
   width: 400px;
   height: 500px;

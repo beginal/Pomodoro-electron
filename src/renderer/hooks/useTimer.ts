@@ -88,7 +88,7 @@ export const useTimer = (settings: TimerSettings): UseTimerReturn => {
 
   // 메뉴바 타이머 업데이트
   useEffect(() => {
-    if (window.api && window.api.updateMenubarTimer) {
+    if (window.api?.updateMenubarTimer) {
       const totalTime = timerMode === 'work' ? currentWorkDuration * 60 : currentBreakDuration * 60;
       window.api.updateMenubarTimer(timeRemaining, isRunning, totalTime);
     }

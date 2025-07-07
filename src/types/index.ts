@@ -33,4 +33,13 @@ export interface ElectronAPI {
   updateStats: (stats: Stats) => Promise<boolean>;
   minimize: () => void;
   close: () => void;
+  isCompactMode: () => Promise<boolean>;
+  toggleCompactMode: () => void;
+  updateMenubarTimer: (timeRemaining: number, isRunning: boolean, totalTime: number) => void;
+}
+
+declare global {
+  interface Window {
+    api: ElectronAPI;
+  }
 }

@@ -26,16 +26,17 @@ const saveCompactModeToStore = (mode: boolean) => {
 };
 
 function createWindow() {
-  // 저장된 컴팩트 모드 상태 로드
-  isCompactMode = getCompactModeFromStore();
+  // 앱 시작 시 항상 일반 모드로 초기화
+  isCompactMode = false;
+  saveCompactModeToStore(false);
 
   const preloadPath = path.join(__dirname, "../preload/preload.js");
   console.log("Preload path:", preloadPath);
   console.log("Preload file exists:", fs.existsSync(preloadPath));
 
   mainWindow = new BrowserWindow({
-    width: isCompactMode ? 235 : 400,
-    height: isCompactMode ? 230 : 550,
+    width: 400,
+    height: 550,
     minWidth: 235,
     minHeight: 230,
     maxWidth: 800,
@@ -63,29 +64,45 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 
-  // 항상 개발자 도구를 열어서 오류 확인
-  mainWindow.webContents.openDevTools({ mode: "detach" });
+  // 개발 모드에서만 개발자 도구 열기
+  if (isDev) {
+    mainWindow.webContents.openDevTools({ mode: "detach" });
+  }
 
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
+
+  // 창이 로드된 후 일반 모드로 설정
+  mainWindow.webContents.once("did-finish-load", () => {
+    // 일반 모드 상태를 렌더러에 전달
+    if (mainWindow) {
+      mainWindow.webContents.send("set-compact-mode", false);
+    }
+  });
 }
 
 function createTray() {
-  // 임시로 시스템 트레이 비활성화 (아이콘이 준비될 때까지)
-  return;
-  /*
-  const iconPath = path.join(__dirname, '../assets/images/icon.png');
+  const iconPath = path.join(__dirname, "../assets/images/icon.svg");
   tray = new Tray(iconPath);
-  
+
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Show', click: () => mainWindow?.show() },
-    { label: 'Quit', click: () => app.quit() }
+    { 
+      label: "Show", 
+      click: () => {
+        if (mainWindow) {
+          mainWindow.show();
+        } else {
+          // 창이 없으면 새로 생성 (항상 일반 모드)
+          createWindow();
+        }
+      }
+    },
+    { label: "Quit", click: () => app.quit() },
   ]);
-  
-  tray.setToolTip('Pomodoro Timer');
+
+  tray.setToolTip("Pomodoro Timer");
   tray.setContextMenu(contextMenu);
-  */
 }
 
 // macOS 앱 이름 설정
@@ -104,6 +121,7 @@ app.on("window-all-closed", () => {
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
+    // 재생성 시 항상 일반 모드로 시작
     createWindow();
   }
 });
@@ -121,7 +139,7 @@ ipcMain.on("toggle-compact-mode", () => {
   if (mainWindow) {
     // 현재 창 위치 저장
     const [x, y] = mainWindow.getPosition();
-    
+
     isCompactMode = !isCompactMode;
     console.log("New compact mode state:", isCompactMode);
 
@@ -190,14 +208,14 @@ ipcMain.on("update-menubar-timer", (event, timeRemaining, isRunning, totalTime) 
     if (isRunning && timeRemaining > 0) {
       const minutes = Math.floor(timeRemaining / 60);
       const seconds = timeRemaining % 60;
-      const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      
+      const timeString = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
       // 진행률 계산 (0~1)
       const progress = totalTime > 0 ? (totalTime - timeRemaining) / totalTime : 0;
-      
+
       // 진행률을 윈도우에 설정 (macOS Dock에 표시됨)
       mainWindow.setProgressBar(progress);
-      
+
       mainWindow.setTitle(`🍅 ${timeString}`);
     } else {
       mainWindow.setTitle("Pomodoro Timer");

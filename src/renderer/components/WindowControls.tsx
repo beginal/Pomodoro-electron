@@ -2,11 +2,11 @@ import React from 'react';
 
 const WindowControls: React.FC = () => {
   const handleMinimize = () => {
-    window.api.minimize();
+    window.api?.minimize();
   };
 
   const handleClose = () => {
-    window.api.close();
+    window.api?.close();
   };
 
   return (

@@ -16,15 +16,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Window API 타입 선언
-declare global {
-  interface Window {
-    api?: {
-      minimize: () => void;
-      close: () => void;
-    };
-  }
-}
+// This file is no longer used - types are now in src/types/index.ts
 
 const App: React.FC = () => {
   // 설정을 먼저 로드

@@ -65,11 +65,13 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkCompactMode = async () => {
       console.log("Checking compact mode, window.api:", window.api);
-      if (window.api) {
+      if (window.api?.isCompactMode) {
         try {
           const compact = await window.api.isCompactMode();
           console.log("Compact mode from main:", compact);
           setIsCompactMode(compact);
+          
+          // 컴팩트 모드 상태가 바뀔 때는 React 상태로만 관리
         } catch (error) {
           console.error("Error getting compact mode:", error);
         }
@@ -83,9 +85,31 @@ const App: React.FC = () => {
     
     const timer = setTimeout(() => {
       checkCompactMode();
-    }, 100);
+    }, 500); // 더 긴 지연시간으로 변경
 
     return () => clearTimeout(timer);
+  }, []);
+
+  // 메인 프로세스로부터 컴팩트 모드 설정 받기
+  useEffect(() => {
+    const handleSetCompactMode = (event: any, compact: boolean) => {
+      console.log("Received compact mode from main:", compact);
+      setIsCompactMode(compact);
+      
+      // React 상태로만 관리 - DOM 조작 제거
+    };
+
+    // IPC 리스너 등록
+    if (window.api) {
+      (window as any).electronAPI?.on?.('set-compact-mode', handleSetCompactMode);
+    }
+
+    return () => {
+      // 클린업
+      if (window.api) {
+        (window as any).electronAPI?.removeListener?.('set-compact-mode', handleSetCompactMode);
+      }
+    };
   }, []);
 
   // 휴식 완료 핸들러
@@ -171,15 +195,19 @@ const App: React.FC = () => {
     console.log("window.api:", window.api);
     console.log("typeof window.api:", typeof window.api);
 
+    const newCompactState = !isCompactMode;
+    
     // 우선 상태만 변경해보기
-    setIsCompactMode(!isCompactMode);
-    console.log("New state will be:", !isCompactMode);
+    setIsCompactMode(newCompactState);
+    console.log("New state will be:", newCompactState);
+
+    // React 상태로만 관리 - DOM 조작 제거
 
     // 다양한 방법으로 IPC 호출 시도
     let ipcCallSuccess = false;
 
     // 방법 1: window.api 사용
-    if (window.api && typeof window.api.toggleCompactMode === "function") {
+    if (window.api?.toggleCompactMode) {
       console.log("Method 1: Calling window.api.toggleCompactMode");
       try {
         window.api.toggleCompactMode();
@@ -274,7 +302,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen">
+    <div className={`relative w-screen h-screen app-container ${isCompactMode ? 'compact-mode' : ''}`}>
       {/* 메인 타이머 영역 */}
       <div
         className={`${
