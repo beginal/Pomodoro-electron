@@ -1,0 +1,60 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 원 -->
+  <circle cx="256" cy="256" r="240" fill="#FF4444" stroke="#CC3333" stroke-width="8"/>
+  
+  <!-- 타이머 원판 -->
+  <circle cx="256" cy="256" r="180" fill="white" stroke="#E0E0E0" stroke-width="4"/>
+  
+  <!-- 12시 방향 마킹 -->
+  <rect x="252" y="96" width="8" height="40" fill="#333" rx="4"/>
+  
+  <!-- 3시 방향 마킹 -->
+  <rect x="396" y="252" width="40" height="8" fill="#333" rx="4"/>
+  
+  <!-- 6시 방향 마킹 -->
+  <rect x="252" y="376" width="8" height="40" fill="#333" rx="4"/>
+  
+  <!-- 9시 방향 마킹 -->
+  <rect x="76" y="252" width="40" height="8" fill="#333" rx="4"/>
+  
+  <!-- 작은 눈금들 (5분 간격) -->
+  <g stroke="#666" stroke-width="2">
+    <!-- 1시 -->
+    <line x1="325" y1="135" x2="315" y2="145" stroke-linecap="round"/>
+    <!-- 2시 -->
+    <line x1="377" y1="187" x2="367" y2="197" stroke-linecap="round"/>
+    <!-- 4시 -->
+    <line x1="377" y1="325" x2="367" y2="315" stroke-linecap="round"/>
+    <!-- 5시 -->
+    <line x1="325" y1="377" x2="315" y2="367" stroke-linecap="round"/>
+    <!-- 7시 -->
+    <line x1="187" y1="377" x2="197" y2="367" stroke-linecap="round"/>
+    <!-- 8시 -->
+    <line x1="135" y1="325" x2="145" y2="315" stroke-linecap="round"/>
+    <!-- 10시 -->
+    <line x1="135" y1="187" x2="145" y2="197" stroke-linecap="round"/>
+    <!-- 11시 -->
+    <line x1="187" y1="135" x2="197" y2="145" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 중앙 원 -->
+  <circle cx="256" cy="256" r="20" fill="#333"/>
+  
+  <!-- 시계 바늘 (25분 위치) -->
+  <g stroke="#333" stroke-width="6" stroke-linecap="round">
+    <!-- 짧은 바늘 (현재 시간) -->
+    <line x1="256" y1="256" x2="256" y2="180"/>
+    <!-- 긴 바늘 (25분) -->
+    <line x1="256" y1="256" x2="320" y2="190" stroke-width="4"/>
+  </g>
+  
+  <!-- 포모도로 섹션 강조 (25분) -->
+  <path d="M 256 256 L 256 76 A 180 180 0 0 1 436 256 Z" fill="#FF4444" opacity="0.3"/>
+  
+  <!-- 토마토 잎 장식 -->
+  <g fill="#4CAF50">
+    <ellipse cx="240" cy="60" rx="8" ry="20" transform="rotate(-20 240 60)"/>
+    <ellipse cx="265" cy="50" rx="6" ry="15" transform="rotate(15 265 50)"/>
+    <ellipse cx="285" cy="65" rx="7" ry="18" transform="rotate(45 285 65)"/>
+  </g>
+</svg>
